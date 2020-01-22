@@ -6,9 +6,6 @@ using Orleans.Messaging;
 using Orleans.Providers.MongoDB.Configuration;
 using Orleans.Providers.MongoDB.Membership;
 
-// ReSharper disable AccessToStaticMemberViaDerivedType
-// ReSharper disable CheckNamespace
-
 namespace Orleans
 {
     /// <summary>

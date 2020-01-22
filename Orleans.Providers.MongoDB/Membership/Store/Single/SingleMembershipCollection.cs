@@ -100,11 +100,12 @@ namespace Orleans.Providers.MongoDB.Membership.Store.Single
         {
             try
             {
+                UpdateOptions Upsert = new UpdateOptions { IsUpsert = true };
                 var subDocument = MembershipBase.Create<DeploymentMembership>(entry);
 
                 var memberKey = $"Members.{BuildKey(entry.SiloAddress)}";
 
-                var etagCheck = 
+                var etagCheck =
                     etag == null ?
                         Filter.Not(Filter.Exists(memberKey)) :
                         Filter.Eq($"{memberKey}.Etag", etag);

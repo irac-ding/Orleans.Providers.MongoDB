@@ -17,7 +17,7 @@ namespace Orleans.Providers.MongoDB.StorageProviders
 {
     public class MongoGrainStorage : IGrainStorage, ILifecycleParticipant<ISiloLifecycle>
     {
-        private static readonly UpdateOptions Upsert = new UpdateOptions { IsUpsert = true };
+        protected static readonly ReplaceOptions Upsert = new ReplaceOptions { IsUpsert = true };
         private static readonly FilterDefinitionBuilder<BsonDocument> Filter = Builders<BsonDocument>.Filter;
         private static readonly UpdateDefinitionBuilder<BsonDocument> Update = Builders<BsonDocument>.Update;
         private static readonly ProjectionDefinitionBuilder<BsonDocument> Projection = Builders<BsonDocument>.Projection;
@@ -113,15 +113,16 @@ namespace Orleans.Providers.MongoDB.StorageProviders
 
                 try
                 {
+                    UpdateOptions update = new UpdateOptions { IsUpsert = true };
                     await grainCollection.UpdateOneAsync(
-                        Filter.And(
-                            Filter.Eq(FieldId, grainKey),
-                            Filter.Eq(FieldEtag, grainState.ETag)
-                        ),
-                        Update
-                            .Set(FieldEtag, newETag)
-                            .Set(FieldDoc, newData),
-                        Upsert);
+                                    Filter.And(
+                                        Filter.Eq(FieldId, grainKey),
+                                        Filter.Eq(FieldEtag, grainState.ETag)
+                                    ),
+                                    Update
+                                        .Set(FieldEtag, newETag)
+                                        .Set(FieldDoc, newData),
+                                    update);
                 }
                 catch (MongoException ex)
                 {
